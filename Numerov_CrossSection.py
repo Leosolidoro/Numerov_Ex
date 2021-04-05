@@ -1,4 +1,8 @@
-from Numerov import *
+import numpy as np
+import scipy as sp
+import matplotlib.pyplot as plt
+from scipy.integrate import simps
+
 from BesselFunctions import n_l, j_l
 
 N=1000

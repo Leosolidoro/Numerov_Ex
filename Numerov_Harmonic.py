@@ -1,7 +1,7 @@
 from Numerov import *
 
 ## DEFAULT number of points
-N=1000
+N=10000
 
 ## Define the Potential
 harm="0.5*x*x" # Define Harmonic Potential
@@ -36,26 +36,47 @@ def Harmonic_Simulation(): # Plot the first 5 solutions (POINT 1)
     plt.show()
     
 # Print list of EigenEnergies on the terminal (POINT 2)
-def Radial_Simulation():
+def NumCheck_and_Radial():
 
-    EnergyTable=np.zeros((9,3))
-    
-    for i in range(0,3):
-        EnergyTable[3*i:3*(i+1),0:3]=EnergyGuess(0.3,10,harm,N,True,1.*i,3)
-        
-    ind=np.argsort(EnergyTable[:,0])
-    EnergyTable=EnergyTable[ind]
-    print("List of energy levels")
-    print(tabulate(EnergyTable,floatfmt=(".6f",".0f",".0f"),headers=["Energy","n", "l"]))
-
-def Check_N_Dependence():
+    ENEfile = open("./Energy_Levels.txt","w")
+##############
+######## CHECK ENERGY DEPENDENCE ON POINTS IN THE MESH ######
+###############
     Points = [500,1000,2000,4000,8000,10000,20000,40000]
+#
+    ENEfile.write("\n")
+    ENEfile.write("############################\n")
+    ENEfile.write("#### ENERGY EIGENVALUES ####\n")
+    ENEfile.write("####   DEPENDENCE ON    ####\n")
+    ENEfile.write("#####  NUMBER OF POINTS #####\n")
+    ENEfile.write("############################\n")
+    ENEfile.write("\n")
+    ENEfile.write("Points \t | En- 1.5 | \n")
+    ENEfile.write("------------------ \n")
     Tab=np.zeros((8,2))
     for i in range(0,8):
         En=EnergyGuess(1.4,1.6,harm,Points[i])
-        Tab[i]=[Points[i],abs(En[0,0]-1.5)]
-    print(tabulate(Tab,floatfmt=(".0f",".8f"),headers=["Num","err"]))
+        ENEfile.write("%.0f \t  %f \n"%(Points[i],abs(En[0,0]-1.5)))
+
+#################
+##### FIND ENERGY LEVELS FOR 3 HARMONIC OSCILLATOR
+#################
+
+    EnTab=np.zeros((9,3))
+    ENEfile.write("\n")
+    ENEfile.write("############################\n")
+    ENEfile.write("#### ENERGY EIGENVALUES ####\n")
+    ENEfile.write("####   FOR THE RADIAL   ####\n")
+    ENEfile.write("###  HARMONIC OSCILLATOR ###\n")
+    ENEfile.write("############################\n")
+    ENEfile.write("\n")
+    ENEfile.write("En. \t \t n \t l \n")
+    ENEfile.write("------------------ \n")
     
-#Check_N_Dependence()
-#Radial_Simulation()
-#Harmonic_Simulation()
+    for i in range(0,3):
+        EnTab[3*i:3*(i+1),0:3]=EnergyGuess(0.3,10,harm,N,True,1.*i,3)
+    ind=np.argsort(EnTab[:,0])
+    EnTab=EnTab[ind]
+    
+    for i in range(0,9):
+        ENEfile.write("%f \t  %.0f \t %.0f \n"%(EnTab[i,0],EnTab[i,1],EnTab[i,2]))
